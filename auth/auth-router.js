@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
       .first()
       .then(log => {
           if (log && bcrypt.compareSync(password, log.password)) {
-            
+            req.session.loggedin = true;
               res.status(200).json({ message: `Welcome ${log.username}!` });
           } else {
               res.status(401).json({ message: 'where????' });
@@ -38,6 +38,20 @@ router.post('/login', async (req, res) => {
       res.status(500).json({ message: 'id10t error', err });
   });
 
+});
+
+router.delete('/logout', (req, res) => {
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        res.status(400).send('ques eso?');
+      } else {
+        res.send('eso si que es');
+      }
+    });
+  } else {
+    res.end();
+  }
 });
 
 
